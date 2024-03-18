@@ -1,0 +1,99 @@
+openapi: 3.0.0
+info:
+  title: MVG
+servers:
+  - url: https://www.mvg.de/api/fib/v2
+paths:
+  /departure:
+    get:
+      operationId: getDepartures
+      summary: Returns a list of departures from a stop.
+      parameters:
+        - name: globalId
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: offsetInMinutes
+          in: query
+          schema:
+            type: integer
+        - name: transportTypes
+          in: query
+          schema:
+            type: array
+            style: simple
+            items:
+              $ref: '#/components/schemas/TransportType'
+            minItems: 1
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GetDeparturesResponseItem'
+components:
+  schemas:
+    GetDeparturesResponseItem:
+      type: object
+      properties:
+        plannedDepartureTime:
+          type: integer
+          format: int64
+        realtime:
+          type: boolean
+        delayInMinutes:
+          type: integer
+        realtimeDepartureTime:
+          type: integer
+          format: int64
+        transportType:
+          $ref: '#/components/schemas/TransportType'
+        label:
+          type: string
+        divaId:
+          type: string
+        network:
+          type: string
+        trainType:
+          type: string
+        destination:
+          type: string
+        cancelled:
+          type: boolean
+        sev:
+          type: boolean
+        stopPositionNumber:
+          type: integer
+        stopPointGlobalId:
+          type: string
+      required:
+        - plannedDepartureTime
+        - realtime
+        - delayInMinutes
+        - realtimeDepartureTime
+        - transportType
+        - label
+        - divaId
+        - network
+        - trainType
+        - destination
+        - cancelled
+        - sev
+        - stopPointGlobalId
+    TransportType:
+      type: string
+      enum:
+        - UBAHN
+        - TRAM
+        - BUS
+        - REGIONAL_BUS
+        - SBAHN
+        - SEV
+        - SCHIFF
